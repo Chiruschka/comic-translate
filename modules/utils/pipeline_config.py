@@ -61,20 +61,19 @@ def validate_translator(main: ComicTranslate, target_lang: str):
         Messages.show_missing_tool_error(main, QCoreApplication.translate("Messages", "Translator"))
         return False
 
-    if not settings_page.is_logged_in():
-        Messages.show_not_logged_in_error(main)
-        return False
-
-    # Credential checks
+    # Custom/local LLM: skip login, only need api_url and model
     if "Custom" in translator_tool:
-        # Custom requires api_key, api_url, and model to be configured LOCALLY
         service = tr('Custom')
         creds = credentials.get(service, {})
-        # Check if all required fields are present and non-empty
-        if not all([creds.get('api_key'), creds.get('api_url'), creds.get('model')]):
+        # Only api_url and model are required; api_key is optional for local servers
+        if not all([creds.get('api_url'), creds.get('model')]):
             Messages.show_custom_not_configured_error(main)
             return False
         return True
+
+    if not settings_page.is_logged_in():
+        Messages.show_not_logged_in_error(main)
+        return False
         
     return True
 
