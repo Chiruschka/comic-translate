@@ -42,6 +42,10 @@ def validate_ocr(main: ComicTranslate):
         Messages.show_missing_tool_error(main, QCoreApplication.translate("Messages", "Text Recognition model"))
         return False
     
+    # "Default" OCR runs locally (manga-ocr, PaddleOCR) — no login needed
+    if ocr_tool == tr('Default'):
+        return True
+
     if not settings_page.is_logged_in():
         Messages.show_not_logged_in_error(main)
         return False
